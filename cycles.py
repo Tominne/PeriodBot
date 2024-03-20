@@ -48,7 +48,8 @@ create_period_table_query = """
 CREATE TABLE IF NOT EXISTS periods (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    start_date TEXT NOT NULL
+    start_date TEXT NOT NULL,
+    duration INTEGER
 )
 """
 
