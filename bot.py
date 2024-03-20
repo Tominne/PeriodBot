@@ -1,7 +1,7 @@
 import discord
 import os
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 from cycles import sql_query, get_startDate
 from discord.ext import commands
 from predict import predict_next_start_date
@@ -62,8 +62,12 @@ async def on_message(message: discord.Message):
       if last_start_date_str is not None:
         last_start_date = datetime.strptime(last_start_date_str, '%Y-%m-%d %H:%M:%S.%f')
         days_since_last_period = (datetime.now() - last_start_date).days
+        if avg_duration is None:  # If there's only one start date
+            avg_duration = 5  # Assume a default period duration of 5 days
+        if next_start_date is None:  # If there's no prediction for the next start date
+            next_start_date = last_start_date + timedelta(days=28)  # Assume a default cycle length of 28 days
         if days_since_last_period <= avg_duration:
-            await message.channel.send('Period is due or HAPPENING')
+            await message.channel.send('{message.author}s Period is due.')
             days_until_end = avg_duration - days_since_last_period
             if days_until_end > 0:
                 await message.channel.send(f'{message.author}s period should end in {days_until_end} days.')
@@ -74,7 +78,7 @@ async def on_message(message: discord.Message):
             await message.channel.send(f'{message.author}s next period is due in {days_until_next_period} days :)')
             if days_until_next_period <= 14:
                 await message.channel.send('{message.author} is now ovulating.')
-    else:
+      else:
         await message.channel.send('No period start date found for this user.')
 
     

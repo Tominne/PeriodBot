@@ -1,8 +1,6 @@
 import sqlite3
 from sqlite3 import Error
 from datetime import datetime, timedelta
-from cycles import sql_query, get_startDate
-from discord.ext import commands
 
 def create_connection():
     conn = None
@@ -29,6 +27,7 @@ def predict_next_start_date(user_id):
         return next_start_date, avg_duration
     except Error as e:
       print(e)
+  return None, None
 
 
 
